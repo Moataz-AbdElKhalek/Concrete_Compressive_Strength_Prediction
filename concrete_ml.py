@@ -36,4 +36,9 @@ def NN_Classification(X,y, predict_sample=X[0]):
 
   return score,prediction
 
-
+test_sample = X
+current_score, prediction = NN_Regression(X, y1,test_sample)
+print(current_score)
+print(prediction)
+matplotlib.pyplot.scatter(y1,prediction)
+matplotlib.pyplot.show()
