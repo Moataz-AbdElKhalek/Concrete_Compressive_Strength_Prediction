@@ -11,6 +11,7 @@ def dataset_divide(X, y):
   X_train, X_test, y_train, y_test = sklearn.model_selection.train_test_split(X, y)
   return X_train, X_test, y_train, y_test
 
+
 # ANN Regression Model:
 def NN_Regression(X,y, predict_sample=X[0]):
   # Divide the input dataset:
@@ -24,6 +25,8 @@ def NN_Regression(X,y, predict_sample=X[0]):
 
   return score,prediction
 
+
+# ANN Classification Model:
 def NN_Classification(X,y, predict_sample=X[0]):
   # Divide the input dataset:
   X_train, X_test, y_train, y_test = dataset_divide(X,y)
@@ -36,9 +39,20 @@ def NN_Classification(X,y, predict_sample=X[0]):
 
   return score,prediction
 
+
+# Testing ANN Regression Model:
 test_sample = X
 current_score, prediction = NN_Regression(X, y1,test_sample)
 print(current_score)
 print(prediction)
 matplotlib.pyplot.scatter(y1,prediction)
+matplotlib.pyplot.show()
+
+
+# Testing ANN Classification Model:
+test_sample = X
+current_score, prediction = NN_Classification(X, y2,test_sample)
+print(current_score)
+print(prediction)
+matplotlib.pyplot.scatter(y2,prediction)
 matplotlib.pyplot.show()
