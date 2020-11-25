@@ -7,7 +7,7 @@ Original file is located at
     https://colab.research.google.com/drive/1tuP7TOXAwKp6U1E8WUqSJ6UR0b5TPwbL
 """
 
-import sklearn.neural_network
+import sklearn
 import numpy
 import matplotlib.pyplot
 import itertools
@@ -35,28 +35,42 @@ matplotlib.pyplot.scatter(x3,x2, c=y2)
 
 # Dividing samples dataset into training and test datasets:
 ### I think we better remove the function as by this way with each call we get different datasets for training and testing resulting in different outputs for each model.
-def dataset_divide(X, y):
-  X_train, X_test, y_train, y_test = sklearn.model_selection.train_test_split(X, y)
-  return X_train, X_test, y_train, y_test
+#def dataset_divide(X, y):
+X_train, X_test, y_train, y_test = sklearn.model_selection.train_test_split(X, y2)
+  #return X_train, X_test, y_train, y_test
 
-def NN_Regression(X,y, predict_sample=X[0]):
-  # Divide the input dataset:
-  X_train, X_test, y_train, y_test = dataset_divide(X,y)
+def study_SVM(C_range,kernel,gamma):
+    
+    from sklearn import svm
+    from sklearn.model_selection import GridSearchCV
+    import numpy as np
+    
+    scores = np.zeros((len(gamma),len(C_range)))
+    
+    for i in range (0,len(gamma)):
+        for j in range (0,len(C_range)):
+            clf = svm.SVC(C=C_range[j],kernel =kernel,gamma=gamma[i],random_state=1)
+            clf.fit(X_train,y_train)
+            clf.predict(X_test)
+            scores[i,j]=clf.score(X_test,y_test)
+    
+    #Finding best parameters
+    best_C, best_gamma = 0, 0
+    model = sklearn.svm.SVC(kernel=kernel,random_state=1)
+    paras = {'C':C_range, 'gamma':gamma}
+    clf_1 = GridSearchCV(model, paras)
+    clf_1.fit(X_train, y_train)
+    clf_1.predict(X_test)
+    best_C=clf_1.best_params_['C']
+    best_gamma=clf_1.best_params_['gamma']
+            
+    print('---------Max.score---------')
+    print(np.amax(scores))
+    print('---------Best_C---------')
+    print(best_C)
+    print('---------Best_gamma---------')
+    print(best_gamma)
+    print('---------Full.scores---------')
+    return scores
 
-  # Regression Model Training:
-  model = sklearn.neural_network.MLPRegressor(hidden_layer_sizes=(100,100,100), activation='relu',random_state=1, max_iter=1000)
-  NN_Regressor = model.fit(X_train, y_train)
-  score = NN_Regressor.score(X_test, y_test)
-  prediction = NN_Regressor.predict(predict_sample)
-  
-  return score,prediction
-
-import numpy
-count = 0
-for j in range(100):
-  hidden = numpy.array([[j]])
-  for m in range(10):
-    hidden_new = numpy.repeat(hidden, repeats=m+1, axis=1)
-    print(hidden_new)
-    count+=1
-print(count)
+study_SVM([10**p for p in range(-5, 5, 1)],'rbf',[10**p for p in range(-5, 5, 1)])
